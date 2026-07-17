@@ -27,7 +27,7 @@ The application consists of:
 1. Make sure you have **Python 3.9+** installed.
 2. Install [FFmpeg](https://ffmpeg.org/download.html) — it is required by yt-dlp for merging video/audio tracks and converting to MP3. Ensure that the `ffmpeg` command is accessible in your terminal.
 3. Clone the repository and install the dependencies:
-4.
+4. Run main.py file
 
 ```bash
 git clone [https://github.com/](https://github.com/)<your-username>/yt-downloader.git
