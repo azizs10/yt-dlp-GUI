@@ -44,16 +44,16 @@ class DownloaderApp(ctk.CTk):
 
         self.output_dir = ctk.StringVar(value=DEFAULT_DOWNLOAD_DIR)
         self.url_var = ctk.StringVar()
-        self.format_var = ctk.StringVar(value="Видео (mp4)")
-        self.quality_var = ctk.StringVar(value="Лучшее качество")
+        self.format_var = ctk.StringVar(value="Video (mp4)")
+        self.quality_var = ctk.StringVar(value="Best quality")
 
         self._build_ui()
         self._poll_queue()
 
         if yt_dlp is None:
             self._log(
-                " Библиотека yt-dlp не найдена. Установите зависимости командой:\n"
-                "   pip install -r requirements.txt\n"
+                " yt-dlp library not found. Install dependencies using:\n"
+                "    pip install -r requirements.txt\n"
             )
 
     def _build_ui(self):
@@ -68,7 +68,7 @@ class DownloaderApp(ctk.CTk):
 
         subtitle = ctk.CTkLabel(
             self,
-            text="Скачивайте видео с YouTube и других сайтов на базе yt-dlp",
+            text="Download videos from YouTube and other sites powered by yt-dlp",
             font=ctk.CTkFont(size=13),
             text_color=("gray30", "gray70"),
         )
@@ -79,7 +79,7 @@ class DownloaderApp(ctk.CTk):
         url_frame.grid_columnconfigure(0, weight=1)
 
         ctk.CTkLabel(
-            url_frame, text="Ссылка на видео", font=ctk.CTkFont(size=13, weight="bold")
+            url_frame, text="Video URL", font=ctk.CTkFont(size=13, weight="bold")
         ).grid(row=0, column=0, padx=15, pady=(12, 2), sticky="w")
 
         self.url_entry = ctk.CTkEntry(
@@ -96,23 +96,23 @@ class DownloaderApp(ctk.CTk):
         options_frame.grid_columnconfigure((0, 1), weight=1)
 
         ctk.CTkLabel(
-            options_frame, text="Формат", font=ctk.CTkFont(size=13, weight="bold")
+            options_frame, text="Format", font=ctk.CTkFont(size=13, weight="bold")
         ).grid(row=0, column=0, padx=15, pady=(12, 2), sticky="w")
         self.format_menu = ctk.CTkOptionMenu(
             options_frame,
             variable=self.format_var,
-            values=["Видео (mp4)", "Только аудио (mp3)"],
+            values=["Video (mp4)", "Audio only (mp3)"],
             height=36,
         )
         self.format_menu.grid(row=1, column=0, padx=15, pady=(0, 12), sticky="ew")
 
         ctk.CTkLabel(
-            options_frame, text="Качество", font=ctk.CTkFont(size=13, weight="bold")
+            options_frame, text="Quality", font=ctk.CTkFont(size=13, weight="bold")
         ).grid(row=0, column=1, padx=15, pady=(12, 2), sticky="w")
         self.quality_menu = ctk.CTkOptionMenu(
             options_frame,
             variable=self.quality_var,
-            values=["Лучшее качество", "1080p", "720p", "480p", "360p"],
+            values=["Best quality", "1080p", "720p", "480p", "360p"],
             height=36,
         )
         self.quality_menu.grid(row=1, column=1, padx=15, pady=(0, 12), sticky="ew")
@@ -122,7 +122,7 @@ class DownloaderApp(ctk.CTk):
         folder_frame.grid_columnconfigure(0, weight=1)
 
         ctk.CTkLabel(
-            folder_frame, text="Папка для сохранения", font=ctk.CTkFont(size=13, weight="bold")
+            folder_frame, text="Save Folder", font=ctk.CTkFont(size=13, weight="bold")
         ).grid(row=0, column=0, padx=15, pady=(12, 2), sticky="w", columnspan=2)
 
         self.folder_entry = ctk.CTkEntry(
@@ -131,13 +131,13 @@ class DownloaderApp(ctk.CTk):
         self.folder_entry.grid(row=1, column=0, padx=(15, 5), pady=(0, 12), sticky="ew")
 
         self.browse_btn = ctk.CTkButton(
-            folder_frame, text="Обзор...", width=100, height=38, command=self._choose_folder
+            folder_frame, text="Browse...", width=100, height=38, command=self._choose_folder
         )
         self.browse_btn.grid(row=1, column=1, padx=(5, 15), pady=(0, 12))
 
         self.download_btn = ctk.CTkButton(
             self,
-            text="Скачать",
+            text="Download",
             height=46,
             font=ctk.CTkFont(size=16, weight="bold"),
             command=self._start_download,
@@ -148,7 +148,7 @@ class DownloaderApp(ctk.CTk):
         self.progress_bar.set(0)
         self.progress_bar.grid(row=6, column=0, padx=20, pady=(5, 5), sticky="ew")
 
-        self.status_label = ctk.CTkLabel(self, text="Готов к работе", font=ctk.CTkFont(size=12))
+        self.status_label = ctk.CTkLabel(self, text="Ready", font=ctk.CTkFont(size=12))
         self.status_label.grid(row=7, column=0, padx=20, pady=(0, 5), sticky="w")
 
         self.grid_rowconfigure(8, weight=1)
@@ -172,29 +172,29 @@ class DownloaderApp(ctk.CTk):
 
     def _start_download(self):
         if self.is_downloading:
-            messagebox.showinfo(APP_NAME, "Загрузка уже выполняется, подождите.")
+            messagebox.showinfo(APP_NAME, "Download is already in progress, please wait.")
             return
 
         if yt_dlp is None:
             messagebox.showerror(
                 APP_NAME,
-                "Библиотека yt-dlp не установлена.\nВыполните: pip install -r requirements.txt",
+                "The yt-dlp library is not installed.\nRun: pip install -r requirements.txt",
             )
             return
 
         url = self.url_var.get().strip()
         if not url:
-            messagebox.showwarning(APP_NAME, "Введите ссылку на видео.")
+            messagebox.showwarning(APP_NAME, "Please enter a video URL.")
             return
 
         out_dir = self.output_dir.get().strip() or DEFAULT_DOWNLOAD_DIR
         os.makedirs(out_dir, exist_ok=True)
 
         self.is_downloading = True
-        self.download_btn.configure(state="disabled", text="Загрузка...")
+        self.download_btn.configure(state="disabled", text="Downloading...")
         self.progress_bar.set(0)
-        self._set_status("Подготовка...")
-        self._log(f"Начинаю загрузку: {url}")
+        self._set_status("Preparing...")
+        self._log(f"Starting download: {url}")
 
         self.download_thread = threading.Thread(
             target=self._download_worker, args=(url, out_dir), daemon=True
@@ -212,15 +212,15 @@ class DownloaderApp(ctk.CTk):
                 speed = d.get("_speed_str", "").strip()
                 eta = d.get("_eta_str", "").strip()
                 self.msg_queue.put(
-                    ("status", f"Скачивание... {d.get('_percent_str', '').strip()} "
-                               f"| скорость: {speed} | осталось: {eta}")
+                    ("status", f"Downloading... {d.get('_percent_str', '').strip()} "
+                               f"| Speed: {speed} | ETA: {eta}")
                 )
             elif d.get("status") == "finished":
-                self.msg_queue.put(("status", "Обработка файла..."))
+                self.msg_queue.put(("status", "Processing file..."))
                 self.msg_queue.put(("progress", 1.0))
 
         quality = self.quality_var.get()
-        is_audio = self.format_var.get().startswith("Только аудио")
+        is_audio = self.format_var.get().startswith("Audio only")
 
         outtmpl = os.path.join(out_dir, "%(title)s.%(ext)s")
 
@@ -242,7 +242,7 @@ class DownloaderApp(ctk.CTk):
                 }
             ]
         else:
-            if quality == "Лучшее качество":
+            if quality == "Best quality":
                 ydl_opts["format"] = "bestvideo+bestaudio/best"
             else:
                 height = quality.replace("p", "")
@@ -254,7 +254,7 @@ class DownloaderApp(ctk.CTk):
         try:
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                 info = ydl.extract_info(url, download=True)
-                title = info.get("title", "видео")
+                title = info.get("title", "video")
             self.msg_queue.put(("done", title))
         except Exception as exc:
             self.msg_queue.put(("error", str(exc)))
@@ -268,13 +268,13 @@ class DownloaderApp(ctk.CTk):
                 elif kind == "status":
                     self._set_status(payload)
                 elif kind == "done":
-                    self._log(f"Готово: {payload}")
-                    self._set_status("Загрузка завершена")
+                    self._log(f"Done: {payload}")
+                    self._set_status("Download completed")
                     self.progress_bar.set(1.0)
                     self._finish_download()
                 elif kind == "error":
-                    self._log(f"Ошибка: {payload}")
-                    self._set_status("Ошибка загрузки")
+                    self._log(f"Error: {payload}")
+                    self._set_status("Download error")
                     self._finish_download()
         except queue.Empty:
             pass
@@ -282,7 +282,7 @@ class DownloaderApp(ctk.CTk):
 
     def _finish_download(self):
         self.is_downloading = False
-        self.download_btn.configure(state="normal", text="Скачать")
+        self.download_btn.configure(state="normal", text="Download")
 
 
 def main():
