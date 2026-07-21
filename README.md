@@ -13,6 +13,7 @@ A simple desktop application with a modern GUI for downloading video and audio f
 - Choose a destination folder to save files
 - Real-time progress bar and download log
 - Modern dark-themed interface powered by CustomTkinter
+- You can choose to download 1 video or all the playlist
 
 ## Interface
 
