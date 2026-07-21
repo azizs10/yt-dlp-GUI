@@ -36,7 +36,7 @@ class DownloaderApp(ctk.CTk):
 
         self.title(f"{APP_NAME} {APP_VERSION}")
         self.geometry("760x560")
-        self.minsize(640, 480)
+        self.minsize(640, 580)
 
         self.msg_queue = queue.Queue()
         self.download_thread = None
@@ -55,9 +55,13 @@ class DownloaderApp(ctk.CTk):
                 " yt-dlp library not found. Install dependencies using:\n"
                 "    pip install -r requirements.txt\n"
             )
+        self.playlist = False
 
     def _build_ui(self):
         self.grid_columnconfigure(0, weight=1)
+
+        # for radio button need to remember
+        self.radio_var = ctk.IntVar(value=1)
 
         header = ctk.CTkLabel(
             self,
@@ -74,8 +78,37 @@ class DownloaderApp(ctk.CTk):
         )
         subtitle.grid(row=1, column=0, padx=20, pady=(0, 15), sticky="w")
 
+        ex = ctk.CTkLabel(
+            self,
+            text='Choose what to download: Video or PLaylist',
+            font=ctk.CTkFont(size=13, weight="bold"),
+
+        )
+        ex.grid(row=2, column=0, padx=20, pady=(0, 5), sticky="w")
+
+        self.radio_frame = ctk.CTkFrame(master=self, fg_color="transparent")
+        self.radio_frame.grid(row=3, column=0, columnspan=2, padx=20, pady=(0, 15), sticky="w")
+
+        self.radio_vd = ctk.CTkRadioButton(
+            master=self.radio_frame,
+            text='Video',
+            command = self.radio_event,
+            value = 1,
+            variable = self.radio_var
+        )
+        self.radio_vd.pack(side='left', padx=(0, 15))
+
+        self.radio_pl = ctk.CTkRadioButton(
+            master=self.radio_frame,
+            text='Playlist',
+            command = self.radio_event,
+            value = 2,
+            variable = self.radio_var,
+        )
+        self.radio_pl.pack(side='left')
+
         url_frame = ctk.CTkFrame(self, corner_radius=12)
-        url_frame.grid(row=2, column=0, padx=20, pady=10, sticky="ew")
+        url_frame.grid(row=4, column=0, padx=20, pady=10, sticky="ew")
         url_frame.grid_columnconfigure(0, weight=1)
 
         ctk.CTkLabel(
@@ -89,10 +122,10 @@ class DownloaderApp(ctk.CTk):
             height=40,
             font=ctk.CTkFont(size=14),
         )
-        self.url_entry.grid(row=1, column=0, padx=15, pady=(0, 12), sticky="ew")
+        self.url_entry.grid(row=4, column=0, padx=15, pady=(0, 12), sticky="ew")
 
         options_frame = ctk.CTkFrame(self, corner_radius=12)
-        options_frame.grid(row=3, column=0, padx=20, pady=10, sticky="ew")
+        options_frame.grid(row=5, column=0, padx=20, pady=10, sticky="ew")
         options_frame.grid_columnconfigure((0, 1), weight=1)
 
         ctk.CTkLabel(
@@ -118,7 +151,7 @@ class DownloaderApp(ctk.CTk):
         self.quality_menu.grid(row=1, column=1, padx=15, pady=(0, 12), sticky="ew")
 
         folder_frame = ctk.CTkFrame(self, corner_radius=12)
-        folder_frame.grid(row=4, column=0, padx=20, pady=10, sticky="ew")
+        folder_frame.grid(row=6, column=0, padx=20, pady=10, sticky="ew")
         folder_frame.grid_columnconfigure(0, weight=1)
 
         ctk.CTkLabel(
@@ -142,19 +175,22 @@ class DownloaderApp(ctk.CTk):
             font=ctk.CTkFont(size=16, weight="bold"),
             command=self._start_download,
         )
-        self.download_btn.grid(row=5, column=0, padx=20, pady=(15, 5), sticky="ew")
+        self.download_btn.grid(row=7, column=0, padx=20, pady=(15, 5), sticky="ew")
 
         self.progress_bar = ctk.CTkProgressBar(self, height=14)
         self.progress_bar.set(0)
-        self.progress_bar.grid(row=6, column=0, padx=20, pady=(5, 5), sticky="ew")
+        self.progress_bar.grid(row=8, column=0, padx=20, pady=(5, 5), sticky="ew")
 
         self.status_label = ctk.CTkLabel(self, text="Ready", font=ctk.CTkFont(size=12))
-        self.status_label.grid(row=7, column=0, padx=20, pady=(0, 5), sticky="w")
+        self.status_label.grid(row=9, column=0, padx=20, pady=(0, 5), sticky="w")
 
-        self.grid_rowconfigure(8, weight=1)
+        self.grid_rowconfigure(10, weight=1)
         self.log_box = ctk.CTkTextbox(self, corner_radius=12, font=ctk.CTkFont(size=12))
         self.log_box.grid(row=8, column=0, padx=20, pady=(5, 20), sticky="nsew")
         self.log_box.configure(state="disabled")
+
+    def radio_event(self):
+        self.playlist = True if self.radio_var.get() == 2 else False
 
     def _choose_folder(self):
         folder = filedialog.askdirectory(initialdir=self.output_dir.get() or ".")
@@ -227,7 +263,7 @@ class DownloaderApp(ctk.CTk):
         ydl_opts = {
             "outtmpl": outtmpl,
             "progress_hooks": [progress_hook],
-            "noplaylist": True,
+            "noplaylist": self.playlist,
             "quiet": True,
             "no_warnings": True,
         }
