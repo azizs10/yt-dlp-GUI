@@ -34,4 +34,4 @@ The application consists of:
 git clone [https://github.com/](https://github.com/)<your-username>/yt-downloader.git
 cd yt-downloader
 pip install -r requirements.txt
-python main.py
+python main.py 
