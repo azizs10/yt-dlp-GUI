@@ -1,4 +1,4 @@
-#  Video Downloader
+#  YT Downloader
 
 A simple desktop application with a modern GUI for downloading video and audio from YouTube and other websites supported by [yt-dlp](https://github.com/yt-dlp/yt-dlp).
 
