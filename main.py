@@ -1,5 +1,5 @@
 """
-Video Downloader is a simple application with a modern GUI for downloading
+YT Downloader is a simple application with a modern GUI for downloading
 videos from YouTube and other sites supported by yt-dlp.
 
 Author: Aziz(azizs10)
@@ -22,7 +22,7 @@ except ImportError:
     yt_dlp = None
 
 
-APP_NAME = "Video Downloader"
+APP_NAME = "YT Downloader"
 APP_VERSION = "1.0.0"
 DEFAULT_DOWNLOAD_DIR = str(Path.home() / "Downloads")
 
