@@ -38,6 +38,9 @@ class DownloaderApp(ctk.CTk):
         self.geometry("760x560")
         self.minsize(640, 580)
 
+        ctk.set_widget_scaling(1.4)
+        ctk.set_window_scaling(1.4)
+
         self.msg_queue = queue.Queue()
         self.download_thread = None
         self.is_downloading = False
