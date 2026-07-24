@@ -8,7 +8,7 @@ License: Apache License 2.0
 
 import os
 import threading
-import queue 
+import queue
 import subprocess
 import sys
 from pathlib import Path
@@ -190,7 +190,7 @@ class DownloaderApp(ctk.CTk):
         self.log_box.configure(state="disabled")
 
     def radio_event(self):
-        self.playlist = True if self.radio_var.get() == 2 else False
+        self.playlist = self.radio_var.get() == 2
 
     def _choose_folder(self):
         folder = filedialog.askdirectory(initialdir=self.output_dir.get() or ".")
@@ -263,7 +263,7 @@ class DownloaderApp(ctk.CTk):
         ydl_opts = {
             "outtmpl": outtmpl,
             "progress_hooks": [progress_hook],
-            "noplaylist": self.playlist,
+            "noplaylist": not self.playlist,
             "quiet": True,
             "no_warnings": True,
         }
